@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import questionsData from "../../data/Questions"
 import QuestionCarousel from '@/components/QuestionCarousel'
 
-const page = () => {
+const Page = () => {
   const [questionsdata, setQuestionsdata] = useState(questionsData)
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showIncorrectModal, setShowIncorrectModal] = useState(false);
@@ -82,4 +82,4 @@ const wrongSound = "/wrong.mp3";
   )
 }
 
-export default page
+export default Page
