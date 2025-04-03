@@ -1,6 +1,6 @@
 "use client"
 import { cn } from "@/utils/cn";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { createNoise3D } from "simplex-noise";
 import { motion } from "framer-motion";
 
@@ -40,19 +40,41 @@ const Vortex = (props) => {
   };
   const lerp = (n1, n2, speed) => (1 - speed) * n1 + speed * n2;
 
-  const setup = () => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (canvas && container) {
-      const ctx = canvas.getContext("2d");
+  // Note: We intentionally ignore certain dependencies in the useCallback hooks below.
+  // - 'center' is used as a mutable reference and doesn't need to trigger re-renders
+  // - 'draw' and 'initParticles' are animation functions that should remain stable
+  // Adding these as dependencies would cause unnecessary re-renders and break the animation
+  const resize = useCallback(
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    (canvas, ctx) => {
+      const { innerWidth, innerHeight } = window;
 
-      if (ctx) {
-        resize(canvas, ctx);
-        initParticles();
-        draw(canvas, ctx);
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+
+      center[0] = 0.5 * canvas.width;
+      center[1] = 0.5 * canvas.height;
+    },
+    []
+  );
+
+  const setup = useCallback(
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    () => {
+      const canvas = canvasRef.current;
+      const container = containerRef.current;
+      if (canvas && container) {
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          resize(canvas, ctx);
+          initParticles();
+          draw(canvas, ctx);
+        }
       }
-    }
-  };
+    },
+    [resize]
+  );
 
   const initParticles = () => {
     tick = 0;
@@ -170,19 +192,6 @@ const Vortex = (props) => {
     return x > canvas.width || x < 0 || y > canvas.height || y < 0;
   };
 
-  const resize = (
-    canvas,
-    ctx
-  ) => {
-    const { innerWidth, innerHeight } = window;
-
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-
-    center[0] = 0.5 * canvas.width;
-    center[1] = 0.5 * canvas.height;
-  };
-
   const renderGlow = (
     canvas,
     ctx
@@ -219,7 +228,7 @@ const Vortex = (props) => {
         resize(canvas, ctx);
       }
     });
-  }, []);
+  }, [setup, resize]);
 
   return (
     <div className={cn("relative h-full w-full", props.containerClassName)}>

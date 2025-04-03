@@ -9,35 +9,21 @@ const Page = () => {
   const [showIncorrectModal, setShowIncorrectModal] = useState(false);
   const [droppedTeams, setDroppedTeams] = useState([]); 
 
-  
-const correctSound = "/correct.mp3";
-const wrongSound = "/wrong.mp3";
-  
-  // Audio elements for correct and incorrect sounds
-  const correctAudio = new Audio(correctSound);
-  const incorrectAudio = new Audio(wrongSound);
-
-
   const handleCorrectGuess = () => {
     setShowCorrectModal(true);
-    correctAudio.play();
     setTimeout(() => setShowCorrectModal(false), 1000);
   };
 
   const handleIncorrectGuess = () => {
     setShowIncorrectModal(true);
-    incorrectAudio.play();
     setTimeout(() => setShowIncorrectModal(false), 1000);
   };
-
-
 
   const handleRemoveDroppedTeam = (teamId) => {
     setDroppedTeams((prevDroppedTeams) =>
       prevDroppedTeams.filter((team) => team.id !== teamId)
     );
   };
-
   
   return (
     <section className='flex'>
@@ -65,7 +51,6 @@ const wrongSound = "/wrong.mp3";
             </div>
           )}
           {showIncorrectModal && (
-
             <div className='relative w-[100vw] h-[100vh] flex justify-center items-center bg-black/80 animated fadeIn z-50 '>
               <div className='bg-red-500 text-white rounded-lg shadow-xl items-center justify-center gap-10  flex flex-col  w-[90%] h-[90%] '>
                 <svg className='fill-white font-extrabold w-[400px]' viewBox="0 0 15 15" version="1.1" >
@@ -76,7 +61,6 @@ const wrongSound = "/wrong.mp3";
             </div>
           )}
         </div>
-
       </div>
     </section>
   )

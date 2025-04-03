@@ -7,8 +7,6 @@ import WinnerModal from './WinnerModal';
 import Navbar from './Navbar';
 
 const QuestionCarousel = () => {
-  const congratsAudio = "/congratulations.mp3"
-  const congratsSound = new Audio(congratsAudio);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealedAnswers, setRevealedAnswers] = useState(Array(8).fill(false));
   const [teams, setTeams] = useState([
@@ -60,7 +58,6 @@ const QuestionCarousel = () => {
       const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
       setWinnerTeam(sortedTeams[0]);
       setShowModal(true);
-      congratsSound.play()
     }
 
     // Set resetCard to true to reset the card to front face
